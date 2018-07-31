@@ -222,6 +222,76 @@ public class Verify
         private float screenReplayConfidence;
         private float screenReplayThreshold;
         private int faceReplaced;
+
+        public float getSyntheticFaceConfidence()
+        {
+            return syntheticFaceConfidence;
+        }
+
+        public void setSyntheticFaceConfidence(float syntheticFaceConfidence)
+        {
+            this.syntheticFaceConfidence = syntheticFaceConfidence;
+        }
+
+        public float getSyntheticFaceThreshold()
+        {
+            return syntheticFaceThreshold;
+        }
+
+        public void setSyntheticFaceThreshold(float syntheticFaceThreshold)
+        {
+            this.syntheticFaceThreshold = syntheticFaceThreshold;
+        }
+
+        public float getMaskConfidence()
+        {
+            return maskConfidence;
+        }
+
+        public void setMaskConfidence(float maskConfidence)
+        {
+            this.maskConfidence = maskConfidence;
+        }
+
+        public float getMaskThreshold()
+        {
+            return maskThreshold;
+        }
+
+        public void setMaskThreshold(float maskThreshold)
+        {
+            this.maskThreshold = maskThreshold;
+        }
+
+        public float getScreenReplayConfidence()
+        {
+            return screenReplayConfidence;
+        }
+
+        public void setScreenReplayConfidence(float screenReplayConfidence)
+        {
+            this.screenReplayConfidence = screenReplayConfidence;
+        }
+
+        public float getScreenReplayThreshold()
+        {
+            return screenReplayThreshold;
+        }
+
+        public void setScreenReplayThreshold(float screenReplayThreshold)
+        {
+            this.screenReplayThreshold = screenReplayThreshold;
+        }
+
+        public int getFaceReplaced()
+        {
+            return faceReplaced;
+        }
+
+        public void setFaceReplaced(int faceReplaced)
+        {
+            this.faceReplaced = faceReplaced;
+        }
     }
 
     public class IDExceptions

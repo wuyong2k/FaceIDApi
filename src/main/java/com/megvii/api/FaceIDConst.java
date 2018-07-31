@@ -10,14 +10,7 @@ public class FaceIDConst
     // endregion
 
     // region Detect
-    public static final String API_PARAM_FACES = "faces";
-    public static final String API_PARAM_QUALITY_THRESHOLD = "quality_threshold";
-    public static final String API_PARAM_LEFT = "left";
-    public static final String API_PARAM_TOP = "top";
-    public static final String API_PARAM_WIDTH = "width";
-    public static final String API_PARAM_HEIGHT = "height";
     public static final String API_PARAM_TOKEN = "token";
-    public static final String API_PARAM_ORIENTATION = "orientation";
     // endregion
 
     // region IDCard OCR V1
@@ -87,13 +80,36 @@ public class FaceIDConst
     public static final String API_PARAM_RETURN_FACES = "return_faces";
     public static final String API_PARAM_MEGLIVE_FLASH_RESULT = "meglive_flash_result";
     public static final String API_PARAM_MULTI_ORIENTED_DETECTION = "multi_oriented_detection";
+    public static final String API_PARAM_CONFIDENCE = "confidence";
+    public static final String API_PARAM_THRESHOLDS = "thresholds";
+    public static final String API_PARAM_THRESHOLDS_1E_3 = "1e-3";
+    public static final String API_PARAM_THRESHOLDS_1E_4 = "1e-4";
+    public static final String API_PARAM_THRESHOLDS_1E_5 = "1e-5";
+    public static final String API_PARAM_THRESHOLDS_1E_6 = "1e-6";
+    public static final String API_PARAM_RESULT_FACEID = "result_faceid";
+    public static final String API_PARAM_RESULT_REF1 = "result_ref1";
+    public static final String API_PARAM_RESULT_REF2 = "result_ref2";
+    public static final String API_PARAM_RESULT_REF3 = "result_ref3";
+    public static final String API_PARAM_ID_EXCEPTIONS = "id_exceptions";
+    public static final String API_PARAM_ID_PHOTO_MONOCHROME = "id_photo_monochrome";
+    public static final String API_PARAM_ID_ATTACKED = "id_attacked";
+    public static final String API_PARAM_FACE_GENUINENESS = "face_genuineness";
+    public static final String API_PARAM_SYNTHETIC_FACE_CONFIDENCE = "synthetic_face_confidence";
+    public static final String API_PARAM_SYNTHETIC_FACE_THRESHOLD = "synthetic_face_threshold";
+    public static final String API_PARAM_MASK_CONFIDENCE = "mask_confidence";
+    public static final String API_PARAM_MASK_THRESHOLD = "mask_threshold";
+    public static final String API_PARAM_SCREEN_REPLAY_CONFIDENCE = "screen_replay_confidence";
+    public static final String API_PARAM_SCREEN_REPLAY_THRESHOLD = "screen_replay_threshold";
+    public static final String API_PARAM_FACE_REPLACED = "face_replaced";
     // endregion
 
     // region Common
     public static final String API_PARAM_NAME = "name";
     public static final String API_PARAM_SIDE = "side";
     public static final String API_PARAM_IMAGE = "image";
+    public static final String API_PARAM_FACES = "faces";
     public static final String API_PARAM_QUALITY = "quality";
+    public static final String API_PARAM_QUALITY_THRESHOLD = "quality_threshold";
     public static final String API_PARAM_RECT = "rect";
     public static final String API_PARAM_RECT_RT = "rt";
     public static final String API_PARAM_RECT_LT = "lt";
@@ -111,5 +127,10 @@ public class FaceIDConst
     public static final String API_PARAM_GENDER = "gender";
     public static final String API_PARAM_IDCARD_NUMBER = "idcard_number";
     public static final String API_PARAM_RESULT = "result";
+    public static final String API_PARAM_ORIENTATION = "orientation";
+    public static final String API_PARAM_LEFT = "left";
+    public static final String API_PARAM_TOP = "top";
+    public static final String API_PARAM_WIDTH = "width";
+    public static final String API_PARAM_HEIGHT = "height";
     // endregion
 }

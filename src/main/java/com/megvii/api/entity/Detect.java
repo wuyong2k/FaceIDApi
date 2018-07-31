@@ -40,7 +40,7 @@ public class Detect
         this.faces = faces;
     }
 
-    public static class DetectFace
+    public class DetectFace
     {
         private float quality;
         private float qualityThreshold;

@@ -11,6 +11,7 @@ import com.megvii.api.entity.Detect;
 import com.megvii.api.entity.IDCardLegality;
 import com.megvii.api.entity.IDCardV1;
 import com.megvii.api.entity.IDCardV2;
+import com.megvii.api.entity.Verify;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,40 +33,39 @@ public class JsonUtil
             detect = new Detect();
             detect.setRequestId(json.getString(FaceIDConst.API_PARAM_REQUEST_ID));
             detect.setTimeUsed(json.getInt(FaceIDConst.API_PARAM_TIME_USED));
-            JSONArray faces = json.optJSONArray(FaceIDConst.API_PARAM_FACES);
-            if (faces != null && faces.length() > 0)
-            {
-                List<Detect.DetectFace> mFaces = new ArrayList<>();
-                for (int i = 0; i < faces.length(); i++)
-                {
-                    JSONObject faceJson = faces.getJSONObject(i);
-                    JSONObject rectJson = faceJson.getJSONObject(FaceIDConst.API_PARAM_RECT);
-                    RectF rect = new RectF();
-                    rect.left = (float) rectJson.getDouble(FaceIDConst.API_PARAM_LEFT);
-                    rect.top = (float) rectJson.getDouble(FaceIDConst.API_PARAM_TOP);
-                    rect.right = (float) (rectJson.getDouble(FaceIDConst.API_PARAM_LEFT) + rectJson.getDouble(FaceIDConst.API_PARAM_WIDTH));
-                    rect.bottom = (float) (rectJson.getDouble(FaceIDConst.API_PARAM_TOP) + rectJson.getDouble(FaceIDConst.API_PARAM_HEIGHT));
-                    float quality = (float) faceJson.getDouble(FaceIDConst.API_PARAM_QUALITY);
-                    float qualityThreshold = (float) faceJson.getDouble(FaceIDConst.API_PARAM_QUALITY_THRESHOLD);
-                    if (quality > qualityThreshold)
-                    {
-                        Detect.DetectFace face = new Detect.DetectFace();
-                        face.setToken(faceJson.getString(FaceIDConst.API_PARAM_TOKEN));
-                        face.setQuality(quality);
-                        face.setQualityThreshold(qualityThreshold);
-                        face.setOrientation(faceJson.optInt(FaceIDConst.API_PARAM_ORIENTATION, 0));
-                        face.setRect(rect);
-                        mFaces.add(face);
-                    }
-                }
-                detect.setFaces(mFaces);
-            }
+            detect.setFaces(json2DetectFace(detect, json.optJSONArray(FaceIDConst.API_PARAM_FACES)));
         }
         catch (JSONException e)
         {
             e.printStackTrace();
         }
         return detect;
+    }
+
+    private static List<Detect.DetectFace> json2DetectFace(Detect detect, JSONArray jsonFaces) throws JSONException
+    {
+        List<Detect.DetectFace> detectFaces = null;
+        if (detect != null && jsonFaces != null)
+        {
+            detectFaces = new ArrayList<>();
+            for (int i = 0; i < jsonFaces.length(); i++)
+            {
+                JSONObject faceJson = jsonFaces.getJSONObject(i);
+                float quality = (float) faceJson.getDouble(FaceIDConst.API_PARAM_QUALITY);
+                float qualityThreshold = (float) faceJson.getDouble(FaceIDConst.API_PARAM_QUALITY_THRESHOLD);
+                if (quality > qualityThreshold)
+                {
+                    Detect.DetectFace face = detect.new DetectFace();
+                    face.setToken(faceJson.getString(FaceIDConst.API_PARAM_TOKEN));
+                    face.setQuality(quality);
+                    face.setQualityThreshold(qualityThreshold);
+                    face.setOrientation(faceJson.optInt(FaceIDConst.API_PARAM_ORIENTATION, 0));
+                    face.setRect(json2RectF(faceJson.getJSONObject(FaceIDConst.API_PARAM_RECT)));
+                    detectFaces.add(face);
+                }
+            }
+        }
+        return detectFaces;
     }
     // endregion
 
@@ -290,6 +290,7 @@ public class JsonUtil
         List<String> list = null;
         if (jsonOrg != null && jsonOrg.length() > 0)
         {
+            list = new ArrayList<>();
             for (int i = 0; i < jsonOrg.length(); i++)
                 list.add(jsonOrg.get(i).toString());
         }
@@ -316,6 +317,111 @@ public class JsonUtil
     // endregion
 
     // region API: Verify
-    
+    public static Verify json2Verify(@NonNull String body) throws NullPointerException
+    {
+        JSONObject json;
+        Verify verify = null;
+        try
+        {
+            json = new JSONObject(body);
+            verify = new Verify();
+            verify.setRequestId(json.getString(FaceIDConst.API_PARAM_REQUEST_ID));
+            verify.setTimeUsed(json.getInt(FaceIDConst.API_PARAM_TIME_USED));
+            verify.setResultFaceId(json2FaceResult(verify, json.optJSONObject(FaceIDConst.API_PARAM_RESULT_FACEID)));
+            verify.setResultRef1(json2FaceResult(verify, json.optJSONObject(FaceIDConst.API_PARAM_RESULT_REF1)));
+            verify.setResultRef2(json2FaceResult(verify, json.optJSONObject(FaceIDConst.API_PARAM_RESULT_REF2)));
+            verify.setResultRef3(json2FaceResult(verify, json.optJSONObject(FaceIDConst.API_PARAM_RESULT_REF3)));
+            verify.setIdExceptions(json2IDExceptions(verify, json.getJSONObject(FaceIDConst.API_PARAM_ID_EXCEPTIONS)));
+            verify.setFaceGenuineness(json2FaceGenuineness(verify, json.optJSONObject(FaceIDConst.API_PARAM_FACE_GENUINENESS)));
+            verify.setFaceInfos(json2FaceInfos(verify, json.optJSONArray(FaceIDConst.API_PARAM_FACES)));
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return verify;
+    }
+
+    private static Verify.FaceResult json2FaceResult(Verify verify, JSONObject jsonFaceResult) throws JSONException
+    {
+        Verify.FaceResult faceResult = null;
+        if (verify != null && jsonFaceResult != null)
+        {
+            faceResult = verify.new FaceResult();
+            faceResult.setConfidence((float) jsonFaceResult.getDouble(FaceIDConst.API_PARAM_CONFIDENCE));
+            JSONObject jsonThresholds = jsonFaceResult.getJSONObject(FaceIDConst.API_PARAM_THRESHOLDS);
+            faceResult.setThresholds_1e3((float) jsonThresholds.getDouble(FaceIDConst.API_PARAM_THRESHOLDS_1E_3));
+            faceResult.setThresholds_1e4((float) jsonThresholds.getDouble(FaceIDConst.API_PARAM_THRESHOLDS_1E_4));
+            faceResult.setThresholds_1e5((float) jsonThresholds.getDouble(FaceIDConst.API_PARAM_THRESHOLDS_1E_5));
+            faceResult.setThresholds_1e6((float) jsonThresholds.getDouble(FaceIDConst.API_PARAM_THRESHOLDS_1E_6));
+        }
+        return faceResult;
+    }
+
+    private static Verify.IDExceptions json2IDExceptions(Verify verify, JSONObject jsonIDExceptions) throws JSONException
+    {
+        Verify.IDExceptions idExceptions = null;
+        if (verify != null && jsonIDExceptions != null)
+        {
+            idExceptions = verify.new IDExceptions();
+            idExceptions.setIdAttacked(jsonIDExceptions.getInt(FaceIDConst.API_PARAM_ID_ATTACKED));
+            idExceptions.setIdPhotoMonochrome(jsonIDExceptions.getInt(FaceIDConst.API_PARAM_ID_PHOTO_MONOCHROME));
+        }
+        return idExceptions;
+    }
+
+    private static Verify.FaceGenuineness json2FaceGenuineness(Verify verify, JSONObject jsonFaceGenuineness) throws JSONException
+    {
+        Verify.FaceGenuineness faceGenuineness = null;
+        if (verify != null && jsonFaceGenuineness != null)
+        {
+            faceGenuineness = verify.new FaceGenuineness();
+            faceGenuineness.setFaceReplaced(jsonFaceGenuineness.getInt(FaceIDConst.API_PARAM_FACE_REPLACED));
+            faceGenuineness.setMaskConfidence((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_MASK_CONFIDENCE));
+            faceGenuineness.setMaskThreshold((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_MASK_THRESHOLD));
+            faceGenuineness.setScreenReplayConfidence((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_SCREEN_REPLAY_CONFIDENCE));
+            faceGenuineness.setScreenReplayThreshold((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_SCREEN_REPLAY_THRESHOLD));
+            faceGenuineness.setSyntheticFaceConfidence((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_SYNTHETIC_FACE_CONFIDENCE));
+            faceGenuineness.setSyntheticFaceThreshold((float) jsonFaceGenuineness.getDouble(FaceIDConst.API_PARAM_SYNTHETIC_FACE_THRESHOLD));
+        }
+        return faceGenuineness;
+    }
+
+    private static List<Verify.FaceInfo> json2FaceInfos(Verify verify, JSONArray jsonFaces) throws JSONException
+    {
+        List<Verify.FaceInfo> faceInfos = null;
+        if (verify != null && jsonFaces != null)
+        {
+            faceInfos = new ArrayList<>();
+            for (int i = 0; i < jsonFaces.length(); i++)
+            {
+                JSONObject jsonFace = jsonFaces.getJSONObject(i);
+                Verify.FaceInfo faceInfo = verify.new FaceInfo();
+                faceInfo.setOrientation(jsonFace.getInt(FaceIDConst.API_PARAM_ORIENTATION));
+                faceInfo.setRect(json2RectF(jsonFace.getJSONObject(FaceIDConst.API_PARAM_RECT)));
+                faceInfo.setQuality((float) jsonFace.getDouble(FaceIDConst.API_PARAM_QUALITY));
+                faceInfo.setQualityThreshold((float) jsonFace.getDouble(FaceIDConst.API_PARAM_QUALITY_THRESHOLD));
+                faceInfos.add(faceInfo);
+            }
+        }
+        return faceInfos;
+    }
+
+    // endregion
+
+    // region Common
+    private static RectF json2RectF(JSONObject jsonRect) throws JSONException
+    {
+        RectF rect = null;
+        if (jsonRect != null)
+        {
+            rect = new RectF();
+            rect.left = (float) jsonRect.getDouble(FaceIDConst.API_PARAM_LEFT);
+            rect.top = (float) jsonRect.getDouble(FaceIDConst.API_PARAM_TOP);
+            rect.right = (float) (jsonRect.getDouble(FaceIDConst.API_PARAM_LEFT) + jsonRect.getDouble(FaceIDConst.API_PARAM_WIDTH));
+            rect.bottom = (float) (jsonRect.getDouble(FaceIDConst.API_PARAM_TOP) + jsonRect.getDouble(FaceIDConst.API_PARAM_HEIGHT));
+        }
+        return rect;
+    }
     // endregion
 }
