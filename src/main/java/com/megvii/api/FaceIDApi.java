@@ -31,20 +31,12 @@ public final class FaceIDApi
     public static final int API_ID_OCR_BANKCARD = 104;
     public static final int API_ID_VERIFY = 105;
 
-    public static final String VERIFY_COMPARISON_TYPE_SOURCE_NO = "0";
-    public static final String VERIFY_COMPARISON_TYPE_SOURCE_YES = "1";
-    public static final String VERIFY_CHECK_DELTA_NO = "0";
-    public static final String VERIFY_CHECK_DELTA_YES = "1";
-    public static final String VERIFY_MULTI_ORIENTED_DETECTION_NO = "0";
-    public static final String VERIFY_MULTI_ORIENTED_DETECTION_YES = "1";
-    public static final String VERIFY_FAIL_WHEN_MULTIPLE_FACES_NO = "0";
-    public static final String VERIFY_FAIL_WHEN_MULTIPLE_FACES_YES = "1";
-    public static final String VERIFY_RETURN_FACES_NO = "0";
-    public static final String VERIFY_RETURN_FACES_YES = "1";
-    public static final String VERIFY_FACE_IMAGE_TYPE_MEGLIVE = "meglive";
-    public static final String VERIFY_FACE_IMAGE_TYPE_FACETOKEN = "facetoken";
-    public static final String VERIFY_FACE_IMAGE_TYPE_RAW_IMAGE = "raw_image";
-    public static final String VERIFY_FACE_IMAGE_TYPE_MEGLIVE_FLASH = "meglive_flash";
+    private static final String VERIFY_COMPARISON_TYPE_SOURCE_NO = "0";
+    private static final String VERIFY_COMPARISON_TYPE_SOURCE_YES = "1";
+    private static final String VERIFY_FACE_IMAGE_TYPE_MEGLIVE = "meglive";
+    private static final String VERIFY_FACE_IMAGE_TYPE_FACETOKEN = "facetoken";
+    private static final String VERIFY_FACE_IMAGE_TYPE_RAW_IMAGE = "raw_image";
+    private static final String VERIFY_FACE_IMAGE_TYPE_MEGLIVE_FLASH = "meglive_flash";
 
     public static final String CONTENT_TYPE_IMAGE = "image/jpg";
 
