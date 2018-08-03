@@ -34,7 +34,7 @@ publish {
     userOrg = 'zuochengyao'
     groupId = 'com.megvii.api' //jCenter上的路径
     artifactId = 'faceid'
-    publishVersion = '1.0'
+    publishVersion = '0.0.7'
     desc = 'A faceid api-http-call library, that is based on okhttp'
     website = 'https://github.com/zuochengyao/FaceIDApi.git'
 }

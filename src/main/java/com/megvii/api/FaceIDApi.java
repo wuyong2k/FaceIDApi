@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.megvii.api.annotation.CheckDelta;
-import com.megvii.api.annotation.ComparisonType;
 import com.megvii.api.annotation.FailWhenMultipleFaces;
 import com.megvii.api.annotation.MultiOrientedDetection;
 import com.megvii.api.annotation.ReturnFaces;
@@ -182,12 +181,12 @@ public final class FaceIDApi
 
     public Verify Verify(@NonNull String idcardName, @NonNull String idcardNumber, @MultiOrientedDetection String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
     {
-        return new FaceIDApi.Verify(idcardName, idcardNumber, multiOrientedDetection, imageRef1, imageRef2, imageRef3);
+        return new Verify(idcardName, idcardNumber, multiOrientedDetection, imageRef1, imageRef2, imageRef3);
     }
 
     public Verify Verify(@NonNull String uuid, @NonNull File imageRef1, @MultiOrientedDetection String multiOrientedDetection, File imageRef2, File imageRef3)
     {
-        return new FaceIDApi.Verify(uuid, imageRef1, multiOrientedDetection, imageRef2, imageRef3);
+        return new Verify(uuid, imageRef1, multiOrientedDetection, imageRef2, imageRef3);
     }
 
     private Map<String, Object> createParamMap()
@@ -224,7 +223,7 @@ public final class FaceIDApi
 
         private Map<String, Object> paramMap;
 
-        Verify(@NonNull String idcardName, @NonNull String idcardNumber, @MultiOrientedDetection String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
+        public Verify(String idcardName, String idcardNumber, String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_YES, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_IDCARD_NAME, idcardName);
@@ -237,7 +236,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        Verify(@NonNull String uuid, @NonNull File imageRef1, @MultiOrientedDetection String multiOrientedDetection, File imageRef2, File imageRef3)
+        public Verify(String uuid, File imageRef1, String multiOrientedDetection, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_NO, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_UUID, uuid);
@@ -248,7 +247,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        Verify(@ComparisonType String comparisonType, @MultiOrientedDetection String multiOrientedDetection)
+        public Verify(String comparisonType, String multiOrientedDetection)
         {
             checkIsInitFinished();
             paramMap = createParamMap();

@@ -17,7 +17,7 @@
 # 指定不去忽略非公共的库的类的成员
 -dontskipnonpubliclibraryclassmembers
 #混淆时所采用的算法
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+#-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 # 保护代码中的Annotation不被混淆
 -keepattributes *Annotation*
 # 忽略警告
@@ -25,7 +25,7 @@
 # 保护泛型不被混淆
 -keepattributes Signature
 # 抛出异常时保留代码行号
--keepattributes InnerClasses,SourceFile,LineNumberTable,RuntimeInvisibleParameterAnnotations
+-keepattributes InnerClasses,Exceptions, Signature, Deprecated, SourceFile, SourceDir, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, Synthetic, EnclosingMethod, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault
 -renamesourcefileattribute SourceFile
 
 # 保留所有的本地native方法不被混淆
@@ -52,11 +52,9 @@
 -keep class com.megvii.api.FaceID* {
     public *;
 }
-
--keep class com.megvii.api.*$* {
-    ** <init>(***);
-    public <fields>;
-    public <methods>;
+-keep class com.megvii.api.FaceIDApi$Verify {
+    public <init>(***);
+    public *;
 }
 
 # 不混淆资源类
