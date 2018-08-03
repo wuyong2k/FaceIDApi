@@ -25,7 +25,8 @@
 # 保护泛型不被混淆
 -keepattributes Signature
 # 抛出异常时保留代码行号
--keepattributes InnerClasses,SourceFile,LineNumberTable
+-keepattributes InnerClasses,SourceFile,LineNumberTable,RuntimeInvisibleParameterAnnotations
+-renamesourcefileattribute SourceFile
 
 # 保留所有的本地native方法不被混淆
 -keepclasseswithmembernames class * {
@@ -51,7 +52,13 @@
 -keep class com.megvii.api.FaceID* {
     public *;
 }
--keep class android.support.annotation.StringDef
+
+-keep class com.megvii.api.*$* {
+    ** <init>(***);
+    public <fields>;
+    public <methods>;
+}
+
 # 不混淆资源类
 -keepclassmembers class **.R$* {
     public static <fields>;

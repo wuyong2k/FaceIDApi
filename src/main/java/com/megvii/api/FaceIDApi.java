@@ -100,13 +100,13 @@ public final class FaceIDApi
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e)
             {
-                OnFailureCallback(API_ID_DETECT, call, e);
+                OnFailureCallback(API_ID_DETECT, e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
-                OnResponseCallback(API_ID_DETECT, call, response);
+                OnResponseCallback(API_ID_DETECT, response);
             }
         });
     }
@@ -124,13 +124,13 @@ public final class FaceIDApi
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e)
             {
-                OnFailureCallback(API_ID_OCR_IDCARD_V1, call, e);
+                OnFailureCallback(API_ID_OCR_IDCARD_V1, e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
-                OnResponseCallback(API_ID_OCR_IDCARD_V1, call, response);
+                OnResponseCallback(API_ID_OCR_IDCARD_V1, response);
             }
         });
     }
@@ -148,13 +148,13 @@ public final class FaceIDApi
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e)
             {
-                OnFailureCallback(API_ID_OCR_IDCARD_V2, call, e);
+                OnFailureCallback(API_ID_OCR_IDCARD_V2, e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
-                OnResponseCallback(API_ID_OCR_IDCARD_V2, call, response);
+                OnResponseCallback(API_ID_OCR_IDCARD_V2, response);
             }
         });
     }
@@ -169,25 +169,25 @@ public final class FaceIDApi
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e)
             {
-                OnFailureCallback(API_ID_OCR_BANKCARD, call, e);
+                OnFailureCallback(API_ID_OCR_BANKCARD, e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
-                OnResponseCallback(API_ID_OCR_BANKCARD, call, response);
+                OnResponseCallback(API_ID_OCR_BANKCARD, response);
             }
         });
     }
 
-    public Verify Verify(@NonNull String idcardName, @NonNull String idcardNumber, File imageRef1, File imageRef2, File imageRef3, @MultiOrientedDetection String multiOrientedDetection)
+    public Verify Verify(@NonNull String idcardName, @NonNull String idcardNumber, @MultiOrientedDetection String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
     {
-        return new Verify(idcardName, idcardNumber, imageRef1, imageRef2, imageRef3, multiOrientedDetection);
+        return new FaceIDApi.Verify(idcardName, idcardNumber, multiOrientedDetection, imageRef1, imageRef2, imageRef3);
     }
 
-    public Verify Verify(@NonNull String uuid, @NonNull File imageRef1, File imageRef2, File imageRef3, @MultiOrientedDetection String multiOrientedDetection)
+    public Verify Verify(@NonNull String uuid, @NonNull File imageRef1, @MultiOrientedDetection String multiOrientedDetection, File imageRef2, File imageRef3)
     {
-        return new Verify(uuid, imageRef1, imageRef2, imageRef3, multiOrientedDetection);
+        return new FaceIDApi.Verify(uuid, imageRef1, multiOrientedDetection, imageRef2, imageRef3);
     }
 
     private Map<String, Object> createParamMap()
@@ -198,7 +198,7 @@ public final class FaceIDApi
         return paramMap;
     }
 
-    private void OnResponseCallback(final int apiId, @NonNull Call call, @NonNull Response response) throws IOException
+    private void OnResponseCallback(final int apiId, @NonNull Response response) throws IOException
     {
         if (mFaceIDApiCallback != null)
         {
@@ -212,10 +212,10 @@ public final class FaceIDApi
         }
     }
 
-    private void OnFailureCallback(final int apiId, @NonNull Call call, @NonNull IOException e)
+    private void OnFailureCallback(final int apiId, @NonNull IOException e)
     {
         if (mFaceIDApiCallback != null)
-            mFaceIDApiCallback.onFailure(apiId, call, e);
+            mFaceIDApiCallback.onFailure(apiId, e);
     }
 
     public class Verify
@@ -224,7 +224,7 @@ public final class FaceIDApi
 
         private Map<String, Object> paramMap;
 
-        private Verify(@NonNull String idcardName, @NonNull String idcardNumber, File imageRef1, File imageRef2, File imageRef3, @MultiOrientedDetection String multiOrientedDetection)
+        Verify(@NonNull String idcardName, @NonNull String idcardNumber, @MultiOrientedDetection String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_YES, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_IDCARD_NAME, idcardName);
@@ -237,7 +237,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        private Verify(@NonNull String uuid, @NonNull File imageRef1, File imageRef2, File imageRef3, @MultiOrientedDetection String multiOrientedDetection)
+        Verify(@NonNull String uuid, @NonNull File imageRef1, @MultiOrientedDetection String multiOrientedDetection, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_NO, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_UUID, uuid);
@@ -248,7 +248,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        private Verify(@ComparisonType String comparisonType, @MultiOrientedDetection String multiOrientedDetection)
+        Verify(@ComparisonType String comparisonType, @MultiOrientedDetection String multiOrientedDetection)
         {
             checkIsInitFinished();
             paramMap = createParamMap();
@@ -312,13 +312,13 @@ public final class FaceIDApi
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e)
                 {
-                    OnFailureCallback(API_ID_VERIFY, call, e);
+                    OnFailureCallback(API_ID_VERIFY, e);
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
                 {
-                    OnResponseCallback(API_ID_VERIFY, call, response);
+                    OnResponseCallback(API_ID_VERIFY, response);
                 }
             });
         }

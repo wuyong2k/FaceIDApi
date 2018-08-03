@@ -30,10 +30,11 @@ dependencies {
 }
 
 publish {
+    repoName = 'Megvii'
     userOrg = 'zuochengyao'
-    groupId = 'com.megvii' //jCenter上的路径
-    artifactId = 'faceid-api'
-    publishVersion = '1.0.1'
+    groupId = 'com.megvii.api' //jCenter上的路径
+    artifactId = 'faceid'
+    publishVersion = '1.0'
     desc = 'A faceid api-http-call library, that is based on okhttp'
     website = 'https://github.com/zuochengyao/FaceIDApi.git'
 }
