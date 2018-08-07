@@ -43,7 +43,7 @@
     public static ** valueOf(java.lang.String);
 }
 
--keep class com.megvii.api.util.* {*;}
+-keep class com.megvii.api.util.* { public *;}
 -keep class com.megvii.api.annotation.* { public *;}
 -keep class com.megvii.api.entity.* {
     void set*(***);
@@ -53,7 +53,7 @@
     public *;
 }
 -keep class com.megvii.api.FaceIDApi$Verify {
-    public <init>(***);
+    private <init>(***);
     public *;
 }
 

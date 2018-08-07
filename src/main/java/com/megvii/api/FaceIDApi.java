@@ -24,10 +24,15 @@ import okhttp3.ResponseBody;
 @SuppressWarnings("unused")
 public final class FaceIDApi
 {
+    /** Detect 接口回调id */
     public static final int API_ID_DETECT = 101;
+    /** IDCardOCR（V1版本） 接口回调id */
     public static final int API_ID_OCR_IDCARD_V1 = 102;
+    /** IDCardOCR（V2版本） 接口回调id */
     public static final int API_ID_OCR_IDCARD_V2 = 103;
+    /** BankCardOCR 接口回调id */
     public static final int API_ID_OCR_BANKCARD = 104;
+    /** Verify 接口回调id */
     public static final int API_ID_VERIFY = 105;
 
     private static final String VERIFY_COMPARISON_TYPE_SOURCE_NO = "0";
@@ -37,7 +42,7 @@ public final class FaceIDApi
     private static final String VERIFY_FACE_IMAGE_TYPE_RAW_IMAGE = "raw_image";
     private static final String VERIFY_FACE_IMAGE_TYPE_MEGLIVE_FLASH = "meglive_flash";
 
-    public static final String CONTENT_TYPE_IMAGE = "image/jpg";
+    private static final String CONTENT_TYPE_IMAGE = "image/jpg";
 
     private FaceIDConfig mFaceIDConfig;
     private FaceIDApiCallback mFaceIDApiCallback;
@@ -48,6 +53,10 @@ public final class FaceIDApi
 
     }
 
+    /**
+     * 获取实例对象
+     * @return FaceIDApi对象
+     */
     public static FaceIDApi getInstance()
     {
         if (mInstance == null)
@@ -63,6 +72,10 @@ public final class FaceIDApi
         return mInstance;
     }
 
+    /**
+     * FaceIDApi 配置初始化
+     * @param config FaceIDConfig 全局配置
+     */
     public void init(@NonNull FaceIDConfig config)
     {
         this.mFaceIDConfig = config;
@@ -82,12 +95,21 @@ public final class FaceIDApi
         return mFaceIDConfig;
     }
 
+    /**
+     * 设置网络回调监听器
+     * @param callback 回调监听实例
+     */
     public void setFaceIDApiCallback(FaceIDApiCallback callback)
     {
         this.mFaceIDApiCallback = callback;
     }
 
-    public void Detect(@NonNull File detectImage, int multiOrientedDetection)
+    /**
+     * 检测一张照片中的人脸，并且将检测出的人脸保存到FaceID平台里，便于后续的人脸比对
+     * @param detectImage 真人人脸照片
+     * @param multiOrientedDetection 是否启动旋转检测；"1"：启动 "0"：不启动
+     */
+    public void Detect(@NonNull File detectImage, @MultiOrientedDetection int multiOrientedDetection)
     {
         checkIsInitFinished();
         final String API_DETECT_URL = "https://api.faceid.com/faceid/v1/Detect";
@@ -110,6 +132,12 @@ public final class FaceIDApi
         });
     }
 
+    /**
+     * 检测和识别中华人民共和国第二代身份证
+     * @param idcardImage 一个身份证照图片，二进制文件
+     * @param legality 返回身份证照片合法性检查结果；"1"：返回 "0"：不返回
+     * @version V1
+     */
     public void IDCardOCR_V1(@NonNull File idcardImage, @Nullable String legality)
     {
         checkIsInitFinished();
@@ -134,6 +162,12 @@ public final class FaceIDApi
         });
     }
 
+    /**
+     * 检测和识别中华人民共和国第二代身份证
+     * @param idcardImage 一个身份证照图片，二进制文件
+     * @param returnPortrait 是否返回身份证上的人像；"1"：返回 "0"：不返回
+     * @version V2
+     */
     public void IDCardOCR_V2(@NonNull File idcardImage, @Nullable String returnPortrait)
     {
         checkIsInitFinished();
@@ -158,6 +192,10 @@ public final class FaceIDApi
         });
     }
 
+    /**
+     * 检测和识别银行卡的卡号信息
+     * @param bankcardImage 一个银行卡照图片，二进制文件
+     */
     public void BankCardOCR(@NonNull File bankcardImage)
     {
         checkIsInitFinished();
@@ -179,11 +217,30 @@ public final class FaceIDApi
         });
     }
 
+    /**
+     * 创建一个Verify有源比对请求对象
+     * @param idcardName 身份证号
+     * @param idcardNumber 身份证号
+     * @param multiOrientedDetection 对image参数和image_ref[x]参数启用图片旋转检测功能；"1"：启用 "0"：不启用
+     * @param imageRef1 参照人脸照片1
+     * @param imageRef2 参照人脸照片2
+     * @param imageRef3 参照人脸照片3
+     * @return Verify有源比对请求对象
+     */
     public Verify Verify(@NonNull String idcardName, @NonNull String idcardNumber, @MultiOrientedDetection String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
     {
         return new Verify(idcardName, idcardNumber, multiOrientedDetection, imageRef1, imageRef2, imageRef3);
     }
 
+    /**
+     * 创建一个Verify无源比对请求对象
+     * @param uuid 标志本次识别对应的用户的id
+     * @param imageRef1 参照人脸照片1（必须）
+     * @param multiOrientedDetection 对image参数和image_ref[x]参数启用图片旋转检测功能；"1"：启用 "0"：不启用
+     * @param imageRef2 参照人脸照片2
+     * @param imageRef3 参照人脸照片3
+     * @return Verify无源比对请求对象
+     */
     public Verify Verify(@NonNull String uuid, @NonNull File imageRef1, @MultiOrientedDetection String multiOrientedDetection, File imageRef2, File imageRef3)
     {
         return new Verify(uuid, imageRef1, multiOrientedDetection, imageRef2, imageRef3);
@@ -223,7 +280,16 @@ public final class FaceIDApi
 
         private Map<String, Object> paramMap;
 
-        public Verify(String idcardName, String idcardNumber, String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
+        /**
+         * 构造器：有源比对
+         * @param idcardName 身份证号
+         * @param idcardNumber 身份证号
+         * @param multiOrientedDetection 对image参数和image_ref[x]参数启用图片旋转检测功能；"1"：启用 "0"：不启用
+         * @param imageRef1 参照人脸照片1
+         * @param imageRef2 参照人脸照片2
+         * @param imageRef3 参照人脸照片3
+         */
+        private Verify(String idcardName, String idcardNumber, String multiOrientedDetection, File imageRef1, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_YES, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_IDCARD_NAME, idcardName);
@@ -236,7 +302,15 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        public Verify(String uuid, File imageRef1, String multiOrientedDetection, File imageRef2, File imageRef3)
+        /**
+         * 构造器：无源比对
+         * @param uuid 标志本次识别对应的用户的id
+         * @param imageRef1 参照人脸照片1（必须）
+         * @param multiOrientedDetection 对image参数和image_ref[x]参数启用图片旋转检测功能；"1"：启用 "0"：不启用
+         * @param imageRef2 参照人脸照片2
+         * @param imageRef3 参照人脸照片3
+         */
+        private Verify(String uuid, File imageRef1, String multiOrientedDetection, File imageRef2, File imageRef3)
         {
             this(VERIFY_COMPARISON_TYPE_SOURCE_NO, multiOrientedDetection);
             paramMap.put(FaceIDConst.API_PARAM_UUID, uuid);
@@ -247,7 +321,12 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_REF3, imageRef3);
         }
 
-        public Verify(String comparisonType, String multiOrientedDetection)
+        /**
+         * 构造器
+         * @param comparisonType 确定本次比对为“有源比对”或“无源比对”
+         * @param multiOrientedDetection 对image参数和image_ref[x]参数启用图片旋转检测功能；"1"：启用 "0"：不启用
+         */
+        private Verify(String comparisonType, String multiOrientedDetection)
         {
             checkIsInitFinished();
             paramMap = createParamMap();
@@ -256,6 +335,18 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_MULTI_ORIENTED_DETECTION, multiOrientedDetection);
         }
 
+        /**
+         * 配合MegLiveSDK使用时，进行比对调用此方法
+         * @param delta 校验上传数据的校验字符串
+         * @param imageBest MegLiveSDK返回的质量最佳的人脸图片
+         * @param imageEnv MegLiveSDK返回的带环境图
+         * @param imageAction1 活体检测图片1
+         * @param imageAction2 活体检测图片2
+         * @param imageAction3 活体检测图片3
+         * @param imageAction4 活体检测图片4
+         * @param imageAction5 活体检测图片5
+         * @param checkDelta 校验delta是否已经使用过；"1"：校验 "0"：不校验
+         */
         public void ByMeglive(@NonNull String delta, @NonNull File imageBest, File imageEnv, File imageAction1, File imageAction2, File imageAction3, File imageAction4, File imageAction5, @CheckDelta String checkDelta)
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_MEGLIVE);
@@ -278,6 +369,10 @@ public final class FaceIDApi
             post();
         }
 
+        /**
+         * 调用detect后获得facetoken时，进行比对调用此方法
+         * @param faceToken 使用detect接口获得的一个标示人脸的token
+         */
         public void ByFaceToken(@NonNull String faceToken)
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_FACETOKEN);
@@ -285,6 +380,13 @@ public final class FaceIDApi
             post();
         }
 
+        /**
+         * 直接上传一张照片时，进行比对调用此方法
+         * @param image 待比对的人脸照片
+         * @param failWhenMultipleFaces 对验证照作人脸检测时发现有多张脸，是否立即返回错误，或者取最大的一张脸继续比对；"1"：立即返回错误码 "0"：取最大脸继续比对
+         * @param faceQualityThreshold 验证照中（最大的一张）人脸图像质量分的阈值（缺省值为30）
+         * @param returnFaces 返回人脸检测结果；"1"：返回 "0"：不返回
+         */
         public void ByRawImage(@NonNull File image, @FailWhenMultipleFaces String failWhenMultipleFaces, String faceQualityThreshold, @ReturnFaces String returnFaces)
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_RAW_IMAGE);
@@ -297,7 +399,11 @@ public final class FaceIDApi
             post();
         }
 
-        public void ByMegliveFlash(@NonNull String megliveFlashResult)
+        /**
+         * 配合MegLiveFlash（炫彩活体）SDK使用时，进行比对调用此方法
+         * @param megliveFlashResult 在 MegLiveFlash（炫彩活体）成功时会生成并返回一个文件
+         */
+        public void ByMegliveFlash(@NonNull File megliveFlashResult)
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_MEGLIVE_FLASH);
             paramMap.put(FaceIDConst.API_PARAM_MEGLIVE_FLASH_RESULT, megliveFlashResult);
