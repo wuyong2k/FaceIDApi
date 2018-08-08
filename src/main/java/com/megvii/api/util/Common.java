@@ -1,6 +1,5 @@
 package com.megvii.api.util;
 
-import android.os.Environment;
 import android.util.Base64;
 
 import java.io.File;
@@ -11,10 +10,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class Common
 {
-    public static boolean convert2File(String base64)
+    /**
+     * base64转换为图片文件
+     * @param filePath 图片文件路径
+     * @param base64 图片base64数据
+     * @return 转换是否成功
+     */
+    public static boolean convert2File(String filePath, String base64)
     {
         byte[] data = Base64.decode(base64, Base64.DEFAULT);
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/MEGVII" + System.currentTimeMillis() + ".jpg");
+        File file = new File(filePath);
         try
         {
             FileOutputStream fos = new FileOutputStream(file);
@@ -29,6 +34,11 @@ public class Common
         return file.exists();
     }
 
+    /**
+     * Sha1 算法
+     * @param strSrc 待加密串
+     * @return 加密后的串
+     */
     public static String shaEncrypt(String strSrc)
     {
         MessageDigest md = null;
@@ -47,6 +57,10 @@ public class Common
         return strDes;
     }
 
+    /**
+     * 数据转换16进制
+     * @param bts 数据
+     */
     public static String bytes2Hex(byte[] bts)
     {
         String des = "";

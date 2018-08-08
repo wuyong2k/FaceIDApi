@@ -23,6 +23,12 @@ import java.util.List;
 public class JsonUtil
 {
     // region API: Detect
+
+    /**
+     * json结果解析为com.megvii.api.entity.Detect对象
+     * @param body Detect接口返回json结果
+     * @return com.megvii.api.entity.Detect对象，若body为非标准json格式，则返回null
+     */
     public static Detect json2Detect(@NonNull String body) throws NullPointerException
     {
         JSONObject json;
@@ -72,6 +78,11 @@ public class JsonUtil
     // region API: IDCardOCR
 
     // region V1
+    /**
+     * json结果解析为com.megvii.api.entity.IDCardV1对象
+     * @param body IDCardOCR_V1接口返回json结果
+     * @return com.megvii.api.entity.IDCardV1对象，若body为非标准json格式，则返回null
+     */
     public static IDCardV1 json2IDCardV1(@NonNull String body) throws NullPointerException
     {
         JSONObject json;
@@ -149,6 +160,11 @@ public class JsonUtil
     // endregion
 
     // region V2
+    /**
+     * json结果解析为com.megvii.api.entity.IDCardV2对象
+     * @param body IDCardOCR_V2接口返回json结果
+     * @return com.megvii.api.entity.IDCardV2对象，若body为非标准json格式，则返回null
+     */
     public static IDCardV2 json2IDCardV2(@NonNull String body) throws NullPointerException
     {
         JSONObject json;
@@ -251,6 +267,11 @@ public class JsonUtil
     //endregion
 
     // region API: BankCardOCR
+    /**
+     * json结果解析为com.megvii.api.entity.BankCard对象
+     * @param body BankCardOCR接口返回json结果
+     * @return com.megvii.api.entity.BankCard对象，若body为非标准json格式，则返回null
+     */
     public static BankCard json2BankCard(@NonNull String body) throws NullPointerException
     {
         JSONObject json;
@@ -317,6 +338,11 @@ public class JsonUtil
     // endregion
 
     // region API: Verify
+    /**
+     * json结果解析为com.megvii.api.entity.Verify对象
+     * @param body Verify接口返回json结果
+     * @return com.megvii.api.entity.Verify对象，若body为非标准json格式，则返回null
+     */
     public static Verify json2Verify(@NonNull String body) throws NullPointerException
     {
         JSONObject json;

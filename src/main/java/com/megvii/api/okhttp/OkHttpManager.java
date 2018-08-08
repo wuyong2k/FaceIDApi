@@ -3,13 +3,18 @@ package com.megvii.api.okhttp;
 import android.support.annotation.NonNull;
 
 import com.megvii.api.FaceIDConfig;
-import com.megvii.api.util.HttpsUtil;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -55,7 +60,7 @@ public class OkHttpManager
             }
         });
         // trust all the https point
-        builder.sslSocketFactory(HttpsUtil.initSSLSocketFactory(), HttpsUtil.initX509TrustManager());
+        builder.sslSocketFactory(initSSLSocketFactory(), initX509TrustManager());
         mOkHttpClient = builder.build();
     }
 
@@ -75,4 +80,42 @@ public class OkHttpManager
         mOkHttpClient.newCall(request).enqueue(callback);
     }
 
+    private SSLSocketFactory initSSLSocketFactory()
+    {
+        SSLSocketFactory ssfFactory = null;
+        try
+        {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, new TrustManager[]{initX509TrustManager()}, new SecureRandom());
+            ssfFactory = sc.getSocketFactory();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return ssfFactory;
+    }
+
+    private X509TrustManager initX509TrustManager()
+    {
+        return new X509TrustManager()
+        {
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException
+            {
+            }
+
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException
+            {
+            }
+
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers()
+            {
+                return new java.security.cert.X509Certificate[]{ };
+            }
+        };
+    }
 }
