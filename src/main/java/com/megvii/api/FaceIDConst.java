@@ -2,6 +2,9 @@ package com.megvii.api;
 
 public class FaceIDConst
 {
+    private FaceIDConst()
+    {}
+
     // region Base
     public static final String API_PARAM_API_KEY = "api_key";
     public static final String API_PARAM_API_SECRET = "api_secret";

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -112,24 +113,28 @@ public final class FaceIDApi
     public void Detect(@NonNull File detectImage, @MultiOrientedDetection int multiOrientedDetection)
     {
         checkIsInitFinished();
-        final String API_DETECT_URL = "https://api.faceid.com/faceid/v1/Detect";
+        if (!detectImage.exists())
+            throw new NullPointerException("detectImage is not exist!");
+        final String API_DETECT_URL = "https://api.faceid.com/faceid/v1/detect";
         Map<String, Object> paramMap = createParamMap();
         paramMap.put(FaceIDConst.API_PARAM_IMAGE, detectImage);
         paramMap.put(FaceIDConst.API_PARAM_MULTI_ORIENTED_DETECTION, multiOrientedDetection == 1 ? 1 : 0);
-        OkHttpManager.getInstance().async(OkHttpRequest.createFilePostRequest(API_DETECT_URL, paramMap, CONTENT_TYPE_IMAGE), new Callback()
-        {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e)
-            {
-                OnFailureCallback(API_ID_DETECT, e);
-            }
+        post(API_ID_DETECT, OkHttpRequest.createFilePostRequest(API_DETECT_URL, paramMap, CONTENT_TYPE_IMAGE));
+    }
 
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
-            {
-                OnResponseCallback(API_ID_DETECT, response);
-            }
-        });
+    /**
+     * 检测一张照片中的人脸，并且将检测出的人脸保存到FaceID平台里，便于后续的人脸比对
+     * @param detectData 真人人脸数据流
+     * @param multiOrientedDetection 是否启动旋转检测；"1"：启动 "0"：不启动
+     */
+    public void Detect(@NonNull byte[] detectData, @MultiOrientedDetection int multiOrientedDetection)
+    {
+        checkIsInitFinished();
+        final String API_DETECT_URL = "https://api.faceid.com/faceid/v1/detect";
+        Map<String, Object> paramMap = createParamMap();
+        paramMap.put(FaceIDConst.API_PARAM_IMAGE, detectData);
+        paramMap.put(FaceIDConst.API_PARAM_MULTI_ORIENTED_DETECTION, multiOrientedDetection == 1 ? 1 : 0);
+        post(API_ID_DETECT, OkHttpRequest.createFilePostRequest(API_DETECT_URL, paramMap, CONTENT_TYPE_IMAGE));
     }
 
     /**
@@ -146,20 +151,7 @@ public final class FaceIDApi
         paramMap.put(FaceIDConst.API_PARAM_IMAGE, idcardImage);
         if (!TextUtils.isEmpty(legality))
             paramMap.put(FaceIDConst.API_PARAM_LEGALITY, legality);
-        OkHttpManager.getInstance().async(OkHttpRequest.createFilePostRequest(API_OCR_IDCARD_URL, paramMap, CONTENT_TYPE_IMAGE), new Callback()
-        {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e)
-            {
-                OnFailureCallback(API_ID_OCR_IDCARD_V1, e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
-            {
-                OnResponseCallback(API_ID_OCR_IDCARD_V1, response);
-            }
-        });
+        post(API_ID_OCR_IDCARD_V1, OkHttpRequest.createFilePostRequest(API_OCR_IDCARD_URL, paramMap, CONTENT_TYPE_IMAGE));
     }
 
     /**
@@ -176,20 +168,7 @@ public final class FaceIDApi
         paramMap.put(FaceIDConst.API_PARAM_IMAGE, idcardImage);
         if (!TextUtils.isEmpty(returnPortrait))
             paramMap.put(FaceIDConst.API_PARAM_RETURN_PORTRAIT, returnPortrait);
-        OkHttpManager.getInstance().async(OkHttpRequest.createFilePostRequest(API_OCR_IDCARD_URL, paramMap, CONTENT_TYPE_IMAGE), new Callback()
-        {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e)
-            {
-                OnFailureCallback(API_ID_OCR_IDCARD_V2, e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
-            {
-                OnResponseCallback(API_ID_OCR_IDCARD_V2, response);
-            }
-        });
+        post(API_ID_OCR_IDCARD_V2, OkHttpRequest.createFilePostRequest(API_OCR_IDCARD_URL, paramMap, CONTENT_TYPE_IMAGE));
     }
 
     /**
@@ -202,19 +181,7 @@ public final class FaceIDApi
         final String API_OCR_BANKCARD_URL = "https://api.megvii.com/faceid/v3/ocrbankcard";
         Map<String, Object> paramMap = createParamMap();
         paramMap.put(FaceIDConst.API_PARAM_IMAGE, bankcardImage);
-        OkHttpManager.getInstance().async(OkHttpRequest.createFilePostRequest(API_OCR_BANKCARD_URL, paramMap, CONTENT_TYPE_IMAGE), new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e)
-            {
-                OnFailureCallback(API_ID_OCR_BANKCARD, e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
-            {
-                OnResponseCallback(API_ID_OCR_BANKCARD, response);
-            }
-        });
+        post(API_ID_OCR_BANKCARD, OkHttpRequest.createFilePostRequest(API_OCR_BANKCARD_URL, paramMap, CONTENT_TYPE_IMAGE));
     }
 
     /**
@@ -366,7 +333,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_IMAGE_ACTION5, imageAction5);
             if (!TextUtils.isEmpty(checkDelta))
                 paramMap.put(FaceIDConst.API_PARAM_CHECK_DELTA, checkDelta);
-            post();
+            post(API_ID_VERIFY, OkHttpRequest.createFilePostRequest(API_VERIFY_URL, paramMap, CONTENT_TYPE_IMAGE));
         }
 
         /**
@@ -377,7 +344,7 @@ public final class FaceIDApi
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_FACETOKEN);
             paramMap.put(FaceIDConst.API_PARAM_FACE_TOKEN, faceToken);
-            post();
+            post(API_ID_VERIFY, OkHttpRequest.createFilePostRequest(API_VERIFY_URL, paramMap, CONTENT_TYPE_IMAGE));
         }
 
         /**
@@ -396,7 +363,7 @@ public final class FaceIDApi
                 paramMap.put(FaceIDConst.API_PARAM_FACE_QUALITY_THRESHOLD, faceQualityThreshold);
             if (!TextUtils.isEmpty(returnFaces))
                 paramMap.put(FaceIDConst.API_PARAM_RETURN_FACES, returnFaces);
-            post();
+            post(API_ID_VERIFY, OkHttpRequest.createFilePostRequest(API_VERIFY_URL, paramMap, CONTENT_TYPE_IMAGE));
         }
 
         /**
@@ -407,25 +374,25 @@ public final class FaceIDApi
         {
             paramMap.put(FaceIDConst.API_PARAM_FACE_IMAGE_TYPE, VERIFY_FACE_IMAGE_TYPE_MEGLIVE_FLASH);
             paramMap.put(FaceIDConst.API_PARAM_MEGLIVE_FLASH_RESULT, megliveFlashResult);
-            post();
+            post(API_ID_VERIFY, OkHttpRequest.createFilePostRequest(API_VERIFY_URL, paramMap, CONTENT_TYPE_IMAGE));
         }
+    }
 
-        private void post()
+    private void post(final int apiId, Request request)
+    {
+        OkHttpManager.getInstance().async(request, new Callback()
         {
-            OkHttpManager.getInstance().async(OkHttpRequest.createFilePostRequest(API_VERIFY_URL, paramMap, CONTENT_TYPE_IMAGE), new Callback()
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e)
             {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e)
-                {
-                    OnFailureCallback(API_ID_VERIFY, e);
-                }
+                OnFailureCallback(apiId, e);
+            }
 
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
-                {
-                    OnResponseCallback(API_ID_VERIFY, response);
-                }
-            });
-        }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
+            {
+                OnResponseCallback(apiId, response);
+            }
+        });
     }
 }

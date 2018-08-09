@@ -56,7 +56,6 @@ public class OkHttpRequest
 
     public static Request createPostRequest(@NonNull final String baseUrl, @NonNull Map<String, String> paramMap)
     {
-
         return null;
     }
 
@@ -70,6 +69,11 @@ public class OkHttpRequest
             {
                 File file = (File) value;
                 builder.addFormDataPart(entry.getKey(), file.getName(), RequestBody.create(MediaType.parse(contentType), file));
+            }
+            else if (value instanceof byte[])
+            {
+                byte[] data = (byte[]) value;
+                builder.addFormDataPart(entry.getKey(), "faceid_image", RequestBody.create(MediaType.parse(contentType), data));
             }
             else
                 builder.addFormDataPart(entry.getKey(), value.toString());

@@ -51,6 +51,7 @@
 }
 -keep class com.megvii.api.FaceID* {
     public *;
+    private <init>(***);
 }
 -keep class com.megvii.api.FaceIDApi$Verify {
     private <init>(***);
